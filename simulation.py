@@ -33,12 +33,13 @@ time_to_stop_simulation = time_now + seconds_to_simulate
 while time_now < time_to_stop_simulation:
     # for each item in the priority queue (road_X), decrease the key (representing the seconds) by one
     for queue_tuple in road_A:
+        queue_tuple[1].total_travel_time += 1
         if queue_tuple[1].time_to_intersection == 0:
             road_A.remove(queue_tuple)
             l_cars_after_leaving_road.append(queue_tuple[1])
         else:
             queue_tuple[1].time_to_intersection -= 1
-            
+
     #decide whether a car is coming or not
     if len(l_cars_before_entering_road) == 0:
         continue
@@ -60,7 +61,18 @@ while time_now < time_to_stop_simulation:
             print "Car on road A: name = " + queue_tuple[1].name + "; Time Left Til Intersection: " +  str(queue_tuple[1].time_to_intersection) + " seconds"
     print "cars already passed: " 
     print [car.name + "," for car in l_cars_after_leaving_road]
-    
+
+seconds_taken_per_car = []
+for car in l_cars_after_leaving_road:
+    seconds_taken_per_car.append(car.total_travel_time)
+avg_seconds_taken_per_car = np.mean(seconds_taken_per_car)
+
+#now, the simulation has ended; print a summary
+print "--------------------------------------------------------------------------------------------------------"
+print "The simulation has ended"
+print "SUMMARY OF SIMULATION: ---------------------------------------------------------"
+print "Time simulated (s): " + str(seconds_to_simulate)
+print "Average time car took to pass through the road (s): " + str(avg_seconds_taken_per_car)
 
 #### sample output from running this simulation:
 #time right now: 1--------------------------------------------
@@ -283,3 +295,8 @@ while time_now < time_to_stop_simulation:
 #time right now: 60--------------------------------------------
 #cars already passed: 
 #['2,', '5,', '0,', '8,', '7,']
+#--------------------------------------------------------------------------------------------------------
+#The simulation has ended
+#SUMMARY OF SIMULATION: ---------------------------------------------------------
+#Time simulated (s): 60
+#Average time car took to pass through the road (s): 7.5
